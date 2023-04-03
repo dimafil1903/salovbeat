@@ -12,7 +12,7 @@ function getMainKeyboard(isAdmin) {
             ],
             [
                 Markup.button.callback('Сингли (Адмін)', 'show_tracks_admin 1'),
-                Markup.button.callback('Альбоми (Адмін)', 'show_albums 1'),
+                Markup.button.callback('Альбоми (Адмін)', 'show_albums_admin 1'),
 
             ],
             [

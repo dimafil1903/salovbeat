@@ -58,8 +58,8 @@ function updateReview(track) {
                      trendiness                = $trendiness,
                      text_and_lyrics_structure = $textAndLyricsStructure,
                      melody_and_performance    = $melodyAndPerformance,
-                     arrangement               = $arrangement,
-                     WHERE id = $id`;
+                     arrangement               = $arrangement
+                 WHERE id = $id`;
 
     return new Promise((resolve, reject) => {
         db.run(sql, {
@@ -69,6 +69,27 @@ function updateReview(track) {
             $textAndLyricsStructure: track.structure,
             $melodyAndPerformance: track.melodicPerformance,
             $arrangement: track.arrangement,
+            $link: track.link,
+            $id: track.id,
+        }, function (err) {
+            if (err) {
+                console.error(err.message);
+                reject(err);
+            } else {
+                console.log(`Track with ID ${track.id} updated`);
+                resolve();
+            }
+        });
+    });
+}
+
+function updateReviewLink(track) {
+    const sql = `UPDATE reviews
+                 SET link = $link
+                 WHERE id = $id`;
+
+    return new Promise((resolve, reject) => {
+        db.run(sql, {
             $link: track.link,
             $id: track.id,
         }, function (err) {
@@ -146,7 +167,7 @@ function formatReviewsDetails(track, isAlbum = false) {
     } else {
         pag = ` `;
     }
-    return `<b>` + t + ` - ${calculateRating(track)} \n</b>`
+    return `<b>${t} - ${calculateRating(track)} \n</b>`
         + pag + `Особисті враження: ${track.personalImpressions}\n`
         + pag + `Трендовість: ${track.trendiness}\n`
         + pag + `Структура тексту та пісні: ${track.structure}\n`
@@ -331,8 +352,26 @@ function getTotalAlbumReviewsCount(callback) {
     });
 }
 
+function deleteReview(reviewId) {
+    const sql = `DELETE
+                 FROM reviews
+                 WHERE id = ?`;
+
+    return new Promise((resolve, reject) => {
+        db.run(sql, [reviewId], function (err) {
+            if (err) {
+                console.error(err.message);
+                reject(err);
+            } else {
+                console.log(`Review with ID ${reviewId} deleted`);
+                resolve();
+            }
+        });
+    });
+}
 
 module.exports = {
+    deleteReview,
     getTotalAlbumReviewsCount,
     getAllAlbums,
     getReviewsByAlbum,
@@ -345,5 +384,6 @@ module.exports = {
     formatReviewsDetails,
     formatReviewsSmall,
     getAllReviews,
-    getTotalReviewsCount
+    getTotalReviewsCount,
+    updateReviewLink
 }

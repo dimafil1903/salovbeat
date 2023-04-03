@@ -1,6 +1,7 @@
 const {WizardScene, Scene} = require("telegraf/scenes");
 const {reviewsHelper} = require("../helpers");
 const {getAlbumKeyboard} = require("../keyboard/albumKeyboard");
+const {startCommand} = require("../handlers/start");
 
 
 function validateTextInput(ctx) {
@@ -44,6 +45,13 @@ const albumScene = new WizardScene(
         return ctx.scene.leave();
     },
 );
+albumScene.hears('/start', async (ctx) => {
+    // Stop the scene and return to the main menu
+    ctx.scene.leave().then(r => console.log(r));
+    ctx.reply('Вперед до головного меню');
+    await startCommand(ctx);
+
+});
 
 // Export the helloWizardScene as a single object
 module.exports = albumScene;

@@ -22,12 +22,12 @@ const handleShowTracks = async (ctx) => {
     reviewsHelper.getAllReviews(PAGE_SIZE, offset, (reviews) => {
         // Check if there are any tracks to show
         if (reviews.length === 0) {
-            ctx.reply('No tracks found.');
+            ctx.reply('Ще нема сингів');
             return;
         }
 
         // Build the message with the track details
-        let message = '<b>Tracks:</b>\n\n';
+        let message = '<b>Сингли:</b>\n\n';
         for (const review of reviews) {
             const details = reviewsHelper.formatReviewsSmall(review);
             message += `${details}\n`;
@@ -84,7 +84,7 @@ const handleShowAlbums = async (ctx) => {
     reviewsHelper.getAllAlbums(PAGE_SIZE_ALBUM, offset, (albums) => {
         // Check if there are any tracks to show
         if (albums.length === 0) {
-            ctx.reply('No albums found.');
+            ctx.reply('Ще нема альбомів');
             return;
         }
 
@@ -138,7 +138,7 @@ const back = async (ctx) => {
 
         ADMIN_IDS.includes(ctx.callbackQuery.message.chat.id) ? admin = true : admin = false;
 
-        await ctx.editMessageText("Welcome to my Telegram bot! Type /help to see available commands.", {parse_mode: 'HTML'});
+        await ctx.editMessageText("Шо ти", {parse_mode: 'HTML'});
 
         await ctx.editMessageReplyMarkup({inline_keyboard: getMainKeyboard(admin).reply_markup.inline_keyboard});
     } catch (error) {
@@ -160,12 +160,12 @@ const handleShowTracksForAdmin = async (ctx) => {
     reviewsHelper.getAllReviews(PAGE_SIZE, offset, (reviews) => {
         // Check if there are any tracks to show
         if (reviews.length === 0) {
-            ctx.reply('No tracks found.');
+            ctx.reply('Ще нема синглів, ти ж адмін)) додай, бро');
             return;
         }
 
         // Build the message with the track details
-        let message = '<b>Tracks:</b>\n\n';
+        let message = '<b>Сингли:</b>\n\n';
         for (const review of reviews) {
             const details = reviewsHelper.formatReviewsDetails(review);
             message +=
@@ -226,7 +226,7 @@ const handleShowAlbumsForAdmin = async (ctx) => {
     reviewsHelper.getAllAlbums(PAGE_SIZE_ALBUM, offset, (albums) => {
         // Check if there are any tracks to show
         if (albums.length === 0) {
-            ctx.reply('No albums found.');
+            ctx.reply('Ще нема альбомів, ти ж адмін))) додай, бро');
             return;
         }
 
@@ -236,9 +236,8 @@ const handleShowAlbumsForAdmin = async (ctx) => {
             reviewsHelper.getReviewsByAlbum(album.id, (reviews) => {
                 const details = reviewsHelper.formatAlbumDetails(album, reviews);
                 message += `${details}\n` +
-                    `/edita_${album.id} \n` +
-                    `/linka_${album.id}\n` +
-                    `/deletea_${album.id}\n\n`;
+                    `/link_${album.id}\n` +
+                    `/delete_${album.id}\n\n`;
             });
         }
 
@@ -251,10 +250,10 @@ const handleShowAlbumsForAdmin = async (ctx) => {
 
             let buttons = [];
             if (page > 1) {
-                buttons.push(Markup.button.callback('⬅️', `show_albums ${page - 1}`));
+                buttons.push(Markup.button.callback('⬅️', `show_albums_admin ${page - 1}`));
             }
             if (page < maxPage) {
-                buttons.push(Markup.button.callback("➡️", `show_albums ${page + 1}`));
+                buttons.push(Markup.button.callback("➡️", `show_albums_admin ${page + 1}`));
             }
 
             buttons = [buttons, [Markup.button.callback("Вихід", `back`)]];

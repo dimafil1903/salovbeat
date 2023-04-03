@@ -13,6 +13,7 @@ let addTrackWizard = require('./app/scenes/add-track');
 let editTrackWizard = require('./app/scenes/edit-track');
 let linkScene = require('./app/scenes/link');
 let albumScene = require('./app/scenes/add-album');
+const {deleteReview} = require("./app/helpers/reviewsHelper");
 
 const ADMIN_IDS = process.env.ADMIN_IDS.split(',').map((id) => parseInt(id));
 
@@ -70,7 +71,6 @@ bot.command(/^edit_(\d+)$/, async (ctx) => {
 
 bot.command(/^link_(\d+)$/, async (ctx) => {
     if (ctx.from && ctx.from.id && ADMIN_IDS.includes(ctx.from.id)) {
-        console.log(ctx.message.text.split('_'));
         ctx.session.trackId = parseInt(ctx.message.text.split('_')[1]);
         await ctx.scene.enter('link');
 
@@ -80,20 +80,23 @@ bot.command(/^link_(\d+)$/, async (ctx) => {
 });
 bot.command(/^delete_(\d+)$/, async (ctx) => {
     if (ctx.from && ctx.from.id && ADMIN_IDS.includes(ctx.from.id)) {
-        console.log(ctx.message.text.split('_'));
         ctx.session.trackId = parseInt(ctx.message.text.split('_')[1]);
-
+        await deleteReview(ctx.session.trackId);
+        await ctx.reply('Добре, видалив');
     } else {
         await ctx.reply('You are not authorized to edit tracks');
     }
 });
 
-// Listener for any text message
-bot.on('text', (ctx) => {
-    const messageText = ctx.message.text;
-    if (!messageText.startsWith('/')) {
-        ctx.reply('Unrecognized command. Type /help for available commands.');
-    }
+bot.command('mylink', (ctx) => {
+    const myLink = 'https://example.com';
+
+    ctx.replyWithHTML(`<b><a href="${myLink}">Click here to visit my link</a></b>
+<b><a href="${myLink}">Click here to visit my link</a></b>
+<b><a href="${myLink}">Click here to visit my link</a></b>
+<b><a href="${myLink}">Click here to visit my link</a></b><b><a href="${myLink}">Click here to visit my link</a></b>
+
+`);
 });
 
 

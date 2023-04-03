@@ -1,9 +1,10 @@
 const {WizardScene, Scene} = require("telegraf/scenes");
 const {reviewsHelper} = require("../helpers");
 const {getAlbumKeyboard} = require("../keyboard/albumKeyboard");
+const {startCommand} = require("../handlers/start");
 
 function validateFloatInput(ctx) {
-    let msg = "Please enter a valid number between 0 and 1";
+    let msg = "Я приймаю дробові значення між 0 та 1";
     if (!ctx.message || !ctx.message.text) {
         ctx.reply(msg);
         console.log('no message');
@@ -19,7 +20,7 @@ function validateFloatInput(ctx) {
 }
 
 function validateTextInput(ctx) {
-    let msg = "Please enter a valid Text";
+    let msg = "Введи нормальний текст, будь людиною";
     if (!ctx.message || !ctx.message.text) {
         ctx.reply(msg);
         return false;
@@ -34,7 +35,7 @@ const addTrackWizard = new WizardScene(
         if (ctx.session.albumID) {
             await ctx.reply('Назва треку з альбому:');
         } else {
-            await ctx.reply('Назва треку:');
+            await ctx.reply('Назва синглу:');
         }
         return ctx.wizard.next();
     },
@@ -44,7 +45,7 @@ const addTrackWizard = new WizardScene(
             return;
         }
         ctx.session.trackTitle = ctx.message.text;
-        await ctx.reply('Особисті враження (0-1)');
+        await ctx.reply('Оцінка особистих вражень (0-1)');
         return ctx.wizard.next();
     },
     async (ctx) => {
@@ -54,7 +55,7 @@ const addTrackWizard = new WizardScene(
         }
         // save the personal impressions to the session
         ctx.session.personalImpressions = parseFloat(ctx.message.text);
-        await ctx.reply('Трендовість (0-1)');
+        await ctx.reply('Оцінка трендовості (0-1)');
         return ctx.wizard.next();
     },
     async (ctx) => {
@@ -64,7 +65,7 @@ const addTrackWizard = new WizardScene(
         }
         // save the trendiness to the session
         ctx.session.trendiness = parseFloat(ctx.message.text);
-        await ctx.reply('Структура тексту та пісні (0-1)');
+        await ctx.reply('Оцінка структури тексту та пісні (0-1)');
         return ctx.wizard.next();
     },
     async (ctx) => {
@@ -74,7 +75,7 @@ const addTrackWizard = new WizardScene(
         }
         // save the structure to the session
         ctx.session.structure = parseFloat(ctx.message.text);
-        await ctx.reply('Мелодійність та виконання (0-1)');
+        await ctx.reply('Оцінка мелодійністі та виконання (0-1)');
         return ctx.wizard.next();
     },
     async (ctx) => {
@@ -84,7 +85,7 @@ const addTrackWizard = new WizardScene(
         }
         // save the melodic performance to the session
         ctx.session.melodicPerformance = parseFloat(ctx.message.text);
-        await ctx.reply('Аранжування (0-1)');
+        await ctx.reply('Оцінка аранжування (0-1)');
         return ctx.wizard.next();
     },
     async (ctx) => {
@@ -142,6 +143,12 @@ const addTrackWizard = new WizardScene(
         }
         return ctx.scene.leave();
     });
+addTrackWizard.hears('/start', async (ctx) => {
+    // Stop the scene and return to the main menu
+    ctx.scene.leave().then(r => console.log(r));
+    ctx.reply('Вперед до головного меню');
+    await startCommand(ctx);
 
+});
 // Export the helloWizardScene as a single object
 module.exports = addTrackWizard;
