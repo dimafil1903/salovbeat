@@ -24,7 +24,7 @@ const linkScene = new WizardScene(
         if (!validateTextInput(ctx)) {
             return;
         }
-        ctx.session.link = parseFloat(ctx.message.text);
+        ctx.session.link = ctx.message.text;
 
         // save the arrangement to the session
         const updateTrack = {

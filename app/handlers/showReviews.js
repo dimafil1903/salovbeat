@@ -92,7 +92,7 @@ const handleShowAlbums = async (ctx) => {
         let message = '<b>Альбоми:</b>\n\n';
         for (const album of albums) {
             reviewsHelper.getReviewsByAlbum(album.id, (error,reviews) => {
-                const details = reviewsHelper.formatAlbumDetails(album, reviews);
+                const details = reviewsHelper.formatAlbumSmallDetails(album, reviews);
                 message += `${details}\n`;
             });
         }
@@ -233,7 +233,7 @@ const handleShowAlbumsForAdmin = async (ctx) => {
         // Build the message with the track details
         let message = '<b>Альбоми:</b>\n\n';
         for (const album of albums) {
-            reviewsHelper.getReviewsByAlbum(album.id, (reviews) => {
+            reviewsHelper.getReviewsByAlbum(album.id, (err,reviews) => {
                 const details = reviewsHelper.formatAlbumDetails(album, reviews);
                 message += `${details}\n` +
                     `/link_${album.id}\n` +

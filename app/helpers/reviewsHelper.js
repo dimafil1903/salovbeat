@@ -135,8 +135,36 @@ function formatAlbumDetails(album, reviews) {
     if (reviews) {
         let reviewsCount = reviews ? reviews.length : 0;
         for (let review of reviews) {
-            rt += parseFloat(calculateRating(review))
+            rt += (calculateRating(review))
             dataText += formatReviewsDetails(review, true);
+        }
+
+        rtTotal = rt / reviewsCount;
+
+        return `<b>` + t + ` - ${rtTotal} </b>\n\n` + dataText + '\n' + '________________________________\n'
+
+    } else {
+        return `<b>` + t + `</b> \n`;
+    }
+
+}
+
+function formatAlbumSmallDetails(album, reviews) {
+
+    let t = '';
+    if (album.link) {
+        t = `<a href="${album.link}">${album.title}</a>`;
+    } else {
+        t = album.title;
+    }
+    let dataText = '';
+    let rtTotal;
+    let rt = 0;
+    if (reviews) {
+        let reviewsCount = reviews ? reviews.length : 0;
+        for (let review of reviews) {
+            rt += calculateRating(review)
+            dataText += formatReviewsSmall(review, true);
         }
 
         rtTotal = rt / reviewsCount;
@@ -145,7 +173,7 @@ function formatAlbumDetails(album, reviews) {
         if (isNaN(rtTotal) || undefined === rtTotal) {
             rtTotal = '';
         }
-        return `<b>` + t + ` - ${rtTotal} </b>\n` + '________________________________\n\n' + dataText;
+        return `<b>` + t + ` - ${rtTotal} </b> \n\n`  + dataText + '________________________________\n';
 
     } else {
         return `<b>` + t + `</b> \n`;
@@ -157,7 +185,7 @@ function formatReviewsDetails(track, isAlbum = false) {
 
     let t = '';
     if (track.link) {
-        t = `<a href="${track.link}">${track.title}</a>`;
+        t = `<b><a href="${track.link}">${track.title}</a></b>`;
     } else {
         t = track.title;
     }
@@ -167,7 +195,7 @@ function formatReviewsDetails(track, isAlbum = false) {
     } else {
         pag = ` `;
     }
-    return `<b>${t} - ${calculateRating(track)} \n</b>`
+    return `  <b>${t} - ${calculateRating(track)} \n</b>`
         + pag + `Особисті враження: ${track.personalImpressions}\n`
         + pag + `Трендовість: ${track.trendiness}\n`
         + pag + `Структура тексту та пісні: ${track.structure}\n`
@@ -175,7 +203,14 @@ function formatReviewsDetails(track, isAlbum = false) {
         + pag + `Аранжування: ${track.arrangement}\n`;
 }
 
-function formatReviewsSmall(track) {
+function formatReviewsSmall(track, isAlbum = false) {
+
+    let pag;
+    if (isAlbum) {
+        pag = `      `;
+    } else {
+        pag = ` `;
+    }
 
     let t = '';
     if (track.link) {
@@ -184,7 +219,7 @@ function formatReviewsSmall(track) {
         t = track.title;
     }
 
-    return t + ` - ${calculateRating(track)} \n`;
+    return pag + t + ` - ${calculateRating(track)} \n`;
 }
 
 function getReviewsByAlbum(albumId, callback) {
@@ -252,15 +287,18 @@ function getReviewById(reviewId, callback) {
 function calculateRating(track) {
     const {personalImpressions, trendiness, structure, melodicPerformance, arrangement} = track;
     const rating = personalImpressions + trendiness + structure + melodicPerformance + arrangement;
-    return rating.toFixed(1);
+    const roundedRating = Math.round(rating * 10) / 10;
+    return roundedRating;
 }
 
 function getAllReviews(limit, offset, callback) {
     try {
-        const sql = `SELECT *
+        const sql = `SELECT *,
+                            (personal_impressions + trendiness + text_and_lyrics_structure + melody_and_performance +
+                             arrangement) AS total_score
                      FROM reviews
                      where type = 'single'
-                     ORDER BY created_at DESC LIMIT ?
+                     ORDER BY total_score DESC LIMIT ?
                      OFFSET ?`;
         db.all(sql, [limit, offset], (err, rows) => {
             if (err) {
@@ -289,12 +327,17 @@ function getAllReviews(limit, offset, callback) {
 
 function getAllAlbums(limit, offset, callback) {
     try {
-        const sql = `SELECT *
-                     FROM reviews
-                     where type = 'album'
-                       and parent_id is null
-                     ORDER BY created_at DESC LIMIT ?
-                     OFFSET ?`;
+        const sql = `
+            SELECT *,
+                   (SELECT SUM(personal_impressions + trendiness + text_and_lyrics_structure + melody_and_performance +
+                               arrangement)
+                    FROM reviews AS tracks
+                    WHERE tracks.parent_id = albums.id) AS total_score
+            FROM reviews AS albums
+            WHERE albums.type = 'album'
+              AND albums.parent_id IS NULL
+            ORDER BY total_score DESC LIMIT ?
+            OFFSET ?`;
         db.all(sql, [limit, offset], (err, rows) => {
             if (err) {
                 console.error(err);
@@ -371,6 +414,7 @@ function deleteReview(reviewId) {
 }
 
 module.exports = {
+    formatAlbumSmallDetails,
     deleteReview,
     getTotalAlbumReviewsCount,
     getAllAlbums,
