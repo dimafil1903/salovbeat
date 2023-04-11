@@ -140,6 +140,7 @@ function formatAlbumDetails(album, reviews) {
         }
 
         rtTotal = rt / reviewsCount;
+        rtTotal = Math.round(rtTotal * 10) / 10;
 
         return `<b>` + t + ` - ${rtTotal} </b>\n\n` + dataText + '\n' + '________________________________\n'
 
@@ -168,8 +169,7 @@ function formatAlbumSmallDetails(album, reviews) {
         }
 
         rtTotal = rt / reviewsCount;
-        rtTotal = parseFloat(rtTotal);
-        rtTotal.toFixed(1)
+        rtTotal = Math.round(rtTotal * 10) / 10;
         if (isNaN(rtTotal) || undefined === rtTotal) {
             rtTotal = '';
         }
