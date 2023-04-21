@@ -102,7 +102,7 @@ const handleShowAlbums = async (ctx) => {
         reviewsHelper.getTotalAlbumReviewsCount(async (err, count) => {
 
             // Calculate the pagination parameters
-            const maxPage = Math.ceil(count / PAGE_SIZE);
+            const maxPage = Math.ceil(count / PAGE_SIZE_ALBUM);
 
             let buttons = [];
             if (page > 1) {
@@ -223,7 +223,7 @@ const handleShowAlbumsForAdmin = async (ctx) => {
 
     const offset = (page - 1) * (PAGE_SIZE_ALBUM-3);
 // Fetch the tracks from the database
-    reviewsHelper.getAllAlbums(PAGE_SIZE_ALBUM, offset, (albums) => {
+    reviewsHelper.getAllAlbums(PAGE_SIZE_ALBUM-3, offset, (albums) => {
         // Check if there are any tracks to show
         if (albums.length === 0) {
             ctx.reply('Ще нема альбомів, ти ж адмін))) додай, бро');
@@ -246,7 +246,7 @@ const handleShowAlbumsForAdmin = async (ctx) => {
         reviewsHelper.getTotalAlbumReviewsCount(async (err, count) => {
 
             // Calculate the pagination parameters
-            const maxPage = Math.ceil(count / PAGE_SIZE);
+            const maxPage = Math.ceil(count / (PAGE_SIZE_ALBUM-3));
 
             let buttons = [];
             if (page > 1) {
