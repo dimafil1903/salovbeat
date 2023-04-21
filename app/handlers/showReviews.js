@@ -55,7 +55,7 @@ const handleShowTracks = async (ctx) => {
             console.log(ctx.chat.id, ctx.callbackQuery.message.message_id,);
 
             if (ctx.callbackQuery.message.reply_markup) {
-                await ctx.editMessageText(message, {parse_mode: 'HTML'});
+                await ctx.editMessageText(message, {parse_mode: 'HTML', disable_web_page_preview: true});
                 await ctx.editMessageReplyMarkup({inline_keyboard: markup.reply_markup.inline_keyboard});
             } else {
                 await ctx.replyWithHTML(message, markup).then((sentMessage) => {
@@ -120,7 +120,7 @@ const handleShowAlbums = async (ctx) => {
             console.log(ctx.chat.id, ctx.callbackQuery.message.message_id,);
 
             if (ctx.callbackQuery.message.reply_markup) {
-                await ctx.editMessageText(message, {parse_mode: 'HTML'});
+                await ctx.editMessageText(message, {parse_mode: 'HTML', disable_web_page_preview: true});
                 await ctx.editMessageReplyMarkup({inline_keyboard: markup.reply_markup.inline_keyboard});
             } else {
                 await ctx.replyWithHTML(message, markup).then((sentMessage) => {
@@ -138,7 +138,7 @@ const back = async (ctx) => {
 
         ADMIN_IDS.includes(ctx.callbackQuery.message.chat.id) ? admin = true : admin = false;
 
-        await ctx.editMessageText("Шо ти", {parse_mode: 'HTML'});
+        await ctx.editMessageText("Шо ти", {parse_mode: 'HTML', disable_web_page_preview: true});
 
         await ctx.editMessageReplyMarkup({inline_keyboard: getMainKeyboard(admin).reply_markup.inline_keyboard});
     } catch (error) {
@@ -198,7 +198,7 @@ const handleShowTracksForAdmin = async (ctx) => {
             console.log(ctx.chat.id, ctx.callbackQuery.message.message_id,);
 
             if (ctx.callbackQuery.message.reply_markup) {
-                await ctx.editMessageText(message, {parse_mode: 'HTML'});
+                await ctx.editMessageText(message, {parse_mode: 'HTML', disable_web_page_preview: true});
                 await ctx.editMessageReplyMarkup({inline_keyboard: markup.reply_markup.inline_keyboard});
             } else {
                 await ctx.replyWithHTML(message, markup).then((sentMessage) => {
@@ -264,7 +264,7 @@ const handleShowAlbumsForAdmin = async (ctx) => {
             console.log(ctx.chat.id, ctx.callbackQuery.message.message_id,);
 
             if (ctx.callbackQuery.message.reply_markup) {
-                await ctx.editMessageText(message, {parse_mode: 'HTML'});
+                await ctx.editMessageText(message, {parse_mode: 'HTML', disable_web_page_preview: true});
                 await ctx.editMessageReplyMarkup({inline_keyboard: markup.reply_markup.inline_keyboard});
             } else {
                 await ctx.replyWithHTML(message, markup).then((sentMessage) => {

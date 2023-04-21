@@ -173,7 +173,7 @@ function formatAlbumSmallDetails(album, reviews) {
         if (isNaN(rtTotal) || undefined === rtTotal) {
             rtTotal = '';
         }
-        return `<b>` + t + ` - ${rtTotal} </b> \n\n`  + dataText + '________________________________\n';
+        return `<b>` + t + ` - ${rtTotal} </b> \n\n` + dataText + '________________________________\n';
 
     } else {
         return `<b>` + t + `</b> \n`;
@@ -207,7 +207,7 @@ function formatReviewsSmall(track, isAlbum = false) {
 
     let pag;
     if (isAlbum) {
-        pag = `      `;
+        pag = `  `;
     } else {
         pag = ` `;
     }
@@ -219,7 +219,7 @@ function formatReviewsSmall(track, isAlbum = false) {
         t = track.title;
     }
 
-    return pag + t + ` - ${calculateRating(track)} \n`;
+    return pag + `${calculateRating(track)} - ` + t + `  \n`;
 }
 
 function getReviewsByAlbum(albumId, callback) {
