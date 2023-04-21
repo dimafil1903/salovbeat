@@ -221,7 +221,7 @@ const handleShowAlbumsForAdmin = async (ctx) => {
         page = parseInt(parts[1]);
     }
 
-    const offset = (page - 1) * PAGE_SIZE_ALBUM;
+    const offset = (page - 1) * (PAGE_SIZE_ALBUM-3);
 // Fetch the tracks from the database
     reviewsHelper.getAllAlbums(PAGE_SIZE_ALBUM, offset, (albums) => {
         // Check if there are any tracks to show
